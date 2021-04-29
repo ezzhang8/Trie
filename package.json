@@ -1,0 +1,22 @@
+{
+  "name": "trie",
+  "version": "1.0.0",
+  "description": "Slingshot Fellowship Summer 2021 Take Home Challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezzhang8/Trie.git"
+  },
+  "author": "Eric Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ezzhang8/Trie/issues"
+  },
+  "homepage": "https://github.com/ezzhang8/Trie#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
