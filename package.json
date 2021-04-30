@@ -4,7 +4,9 @@
   "description": "Slingshot Fellowship Summer 2021 Take Home Challenge",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "test": "node index.js",
+    "dev": "nodemon server"
+
   },
   "repository": {
     "type": "git",
@@ -18,5 +20,11 @@
   "homepage": "https://github.com/ezzhang8/Trie#readme",
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "nodemonConfig": {
+    "ignore": ["data.json"]
   }
 }
