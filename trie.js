@@ -86,15 +86,12 @@ class TrieNode {
         console.log(42);
     }
 
-    static prefix(path, word, maxResults, results = []) {
-        if (results.length == maxResults) 
+    static prefix(find, word, maxResults, results = []) {
+        if (results.length == maxResults || find == undefined) 
             return results;
 
-        const find = this.find(path, word)
-        if (find == undefined) 
-            return false;
         
-        const root = [find[find.length-1]];
+        const root = [find];
         let firstSuggestion = root[0];
         let firstWord = word;
 
@@ -104,9 +101,21 @@ class TrieNode {
             root.push(firstSuggestion);
         }
 
+
         results.push(firstWord);
-        for (let i = root.length-1; i > 0; i--) {
-            
+
+        for (let i = root.length-2; i >= 0; i--) {
+            if (Object.keys(root[i].children).length > 1) {
+                while (Object.keys(root[i].children).length > 0) {
+                    delete root[i].children[Object.keys(root[i].children)[0]];
+                
+                    const nextfind = root[i].children[Object.keys(root[i].children)[0]]
+
+                    const nextstr = results[results.length-1].substring(0, i+word.length)+Object.keys(root[i].children)[0]
+    
+                    this.prefix(nextfind, nextstr, maxResults, results);
+                }
+            }
         }
 
 

@@ -24,7 +24,8 @@ app.post('/words/:word', (req, res) => {
             "word": req.params.word
         }));
     }   
-    catch {
+    catch(e) {
+        console.log(e);
         res.status(400);
         res.send(JSON.stringify({
             "success": false,
@@ -52,8 +53,14 @@ app.get('/find/:word', (req, res) => {
 })
 
 app.get('/autocomplete/:prefix/:max', (req, res) => {
-    TrieNode.prefix(trie.root, req.params.prefix, req.params.max);
-    res.send("ok");
+    const find = JSON.parse(JSON.stringify(TrieNode.find(trie.root, req.params.prefix)));
+    if (find == undefined) 
+        return;
+
+    res.send(JSON.stringify({
+        "success": true,
+        "words": TrieNode.prefix(find[find.length-1], req.params.prefix, req.params.max)
+    }));
 })
 
 
