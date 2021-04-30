@@ -4,7 +4,13 @@ const { Trie, TrieNode } = require('./trie.js');
 
 const app = express();
 
-const trie = new Trie(JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'})));
+const json = JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'}));
+const trie = new Trie(new TrieNode(json));
+
+
+app.get('/words/', (req, res) => {
+    res.send(JSON.stringify(trie));
+})
 
 app.post('/words/:word', (req, res) => {
     try {
@@ -26,14 +32,21 @@ app.post('/words/:word', (req, res) => {
     }
 })
 
-app.get('/get/', (req, res) => {
-    res.send(JSON.stringify(trie));
+app.delete('/words/:word', (req, res) => {
+    TrieNode.delete(trie.root, req.params.word);
+    trie.save(); 
 
-    console.log(TrieNode.find(trie.root, "test"));
+    res.send(JSON.stringify({
+        "success": true
+    }));
 })
 
-app.post('/get/', (req, res) => {
-    res.send(JSON.stringify(trie));
+app.get('/find/:word', (req, res) => {
+    res.status(200);
+    res.send(JSON.stringify({
+        "success": true,
+        "found": TrieNode.find(trie.root, req.params.word) == false ? false : true
+    }));
 })
 
 const PORT = 3000;

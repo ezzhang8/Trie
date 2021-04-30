@@ -41,25 +41,50 @@ class TrieNode {
      * 
      * @param {*} path 
      * @param {*} word
-     * @returns {Boolean} 
+     * @returns {Boolean | Object} 
      */
     static find(path, word) {
         let temp = word;
+        let hierarchy = [path];
         let lastNodePath;
 
+
         for (let i=0; i<temp.length; i++) {
-            if (path.children[temp.charAt(i)] == undefined)  {
-                console.log(path)
+            lastNodePath = hierarchy[hierarchy.length-1];
+
+            if (lastNodePath.children[temp.charAt(i)] == undefined)
                 return false;
-            }
             else {
-                lastNodePath = path.children[temp.charAt(i)];
+                hierarchy.push(lastNodePath.children[temp.charAt(i)])
             }
         }
 
-        return true;
+        return hierarchy;
     }
 
+
+    static delete(path, word) {
+        let hierarchy = TrieNode.find(path, word);
+        if (hierarchy == false) {
+            return false;
+        }
+
+        console.log(hierarchy);
+
+        for (let i = hierarchy.length-1; i>0; i--) {
+            if (Object.keys(hierarchy[i].children).length > 1) {
+                console.log(i);
+                delete hierarchy[i-1].children[word.charAt(i-1)];
+                break;
+            }
+        }
+
+        // if (Object.keys(path.children[word.charAt(0)].children).length == 0) {
+        //     delete path.children[word.charAt(0)];
+        // }
+
+        return true;
+    }
 
 
 }
