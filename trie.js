@@ -34,7 +34,7 @@ class TrieNode {
             path.children[word.charAt(0)] = new TrieNode();
         }
 
-        TrieNode.add(path.children[word.charAt(0)], word.slice(1));    
+        this.add(path.children[word.charAt(0)], word.slice(1));    
     }
 
     /**
@@ -64,26 +64,54 @@ class TrieNode {
 
 
     static delete(path, word) {
-        let hierarchy = TrieNode.find(path, word);
-        if (hierarchy == false) {
+        let hierarchy = this.find(path, word);
+
+        if (hierarchy == false) 
             return false;
-        }
-
-        console.log(hierarchy);
-
-        for (let i = hierarchy.length-1; i>0; i--) {
+        
+        for (let i = hierarchy.length-1; i > 0; i--) {
             if (Object.keys(hierarchy[i].children).length > 1) {
                 console.log(i);
-                delete hierarchy[i-1].children[word.charAt(i-1)];
-                break;
+                delete hierarchy[i].children[word.charAt(i)];
+                return true;
             }
         }
 
-        // if (Object.keys(path.children[word.charAt(0)].children).length == 0) {
-        //     delete path.children[word.charAt(0)];
-        // }
-
+        delete path.children[word.charAt(0)];
+        
         return true;
+    }
+
+    static #prefixHelper() {
+        console.log(42);
+    }
+
+    static prefix(path, word, maxResults, results = []) {
+        if (results.length == maxResults) 
+            return results;
+
+        const find = this.find(path, word)
+        if (find == undefined) 
+            return false;
+        
+        const root = [find[find.length-1]];
+        let firstSuggestion = root[0];
+        let firstWord = word;
+
+        while (!firstSuggestion.isWord) {
+            firstWord += Object.keys(firstSuggestion.children)[0];
+            firstSuggestion = firstSuggestion.children[Object.keys(firstSuggestion.children)[0]];
+            root.push(firstSuggestion);
+        }
+
+        results.push(firstWord);
+        for (let i = root.length-1; i > 0; i--) {
+            
+        }
+
+
+        return results;
+       // this.#prefixHelper();
     }
 
 

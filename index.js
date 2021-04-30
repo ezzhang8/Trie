@@ -1,12 +1,13 @@
 const express = require('express');
 const fs = require('fs');
 const { Trie, TrieNode } = require('./trie.js');
+const { Queue } = require('./queue.js');
 
 const app = express();
 
 const json = JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'}));
-const trie = new Trie(new TrieNode(json));
-
+const trie = new Trie(json);
+const queue = new Queue();
 
 app.get('/words/', (req, res) => {
     res.send(JSON.stringify(trie));
@@ -22,7 +23,7 @@ app.post('/words/:word', (req, res) => {
             "success": true,
             "word": req.params.word
         }));
-    }
+    }   
     catch {
         res.status(400);
         res.send(JSON.stringify({
@@ -42,12 +43,19 @@ app.delete('/words/:word', (req, res) => {
 })
 
 app.get('/find/:word', (req, res) => {
+    const result = TrieNode.find(trie.root, req.params.word)
     res.status(200);
     res.send(JSON.stringify({
         "success": true,
-        "found": TrieNode.find(trie.root, req.params.word) == false ? false : true
+        "found": result == false ? false : result[result.length-1].isWord
     }));
 })
 
-const PORT = 3000;
+app.get('/autocomplete/:prefix/:max', (req, res) => {
+    TrieNode.prefix(trie.root, req.params.prefix, req.params.max);
+    res.send("ok");
+})
+
+
+const PORT = 3000 || process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
