@@ -105,37 +105,49 @@ class TrieNode {
     }
 
     /**
-     * 
-     * @param {*} find 
-     * @param {*} word 
-     * @param {*} maxResults 
-     * @param {*} results 
-     * @returns 
+     * Returns a list of autocomplete results based on a prefix and a maximum amount of results. Recursively traverses the trie from a path until 
+     * @param {TrieNode} find The object from which to find autocomplete suggestions (searches from child node of this object in recursive calls)
+     * @param {string} word The prefix from which to autocomplete
+     * @param {number} maxResults The maximum amount of results to be found before the function stops execution
+     * @param {string[]} results An array containing the autocomplete strings collected by the function thus far
+     * @returns {string[]} An array containing all the autocomplete strings to be returned from this function
      */
     static prefix(find, word, maxResults, results = []) {
+        // As the base case, return when the max number of results is reached, or when there are no more words to be found
         if (results.length == maxResults || find == undefined) 
             return results;
 
-        const root = [find];
-        let firstSuggestion = root[0];
-        let firstWord = word;
+        const root = [find]; // Array representing the hierarchy of nodes until a word is found
+        let firstSuggestion = root[0]; // First suggestion, holds the node of the current node in the below while loop
+        let firstWord = word; // Autocomplete word
 
+        // Traverse the trie depth-wise until a word is complete
         while (!firstSuggestion.isWord) {
-            firstWord += Object.keys(firstSuggestion.children)[0];
-            firstSuggestion = firstSuggestion.children[Object.keys(firstSuggestion.children)[0]];
+            // Chooses the first child in a tree always
+            firstWord += Object.keys(firstSuggestion.children)[0]; // Record the word
+            firstSuggestion = firstSuggestion.children[Object.keys(firstSuggestion.children)[0]]; // Change firstSuggestion to first child of current object
             root.push(firstSuggestion);
+            // push to array
         }
 
+        // push the completed word
         results.push(firstWord);
 
-        for (let i = root.length-2; i >= 0; i--) {
+        // Iterate backwards through hierarchy
+        for (let i=root.length-2; i >= 0; i--) {
+            // If siblings are detected in a parent node
             if (Object.keys(root[i].children).length > 1) {
+                // While there are still children in this node
                 while (Object.keys(root[i].children).length > 0) {
+                    // Delete the node this loop came up from
                     delete root[i].children[Object.keys(root[i].children)[0]];
             
-                    const nextfind = root[i].children[Object.keys(root[i].children)[0]]
-                    const nextstr = results[results.length-1].substring(0, i+word.length)+Object.keys(root[i].children)[0]
+                    // Set a new node to look through
+                    const nextfind = root[i].children[Object.keys(root[i].children)[0]];
+                    // Pass in the new word prefix (more detailed than the original)
+                    const nextstr = results[results.length-1].substring(0, i+word.length)+Object.keys(root[i].children)[0];
     
+                    // Recursively call this method, looking through a sibling tree
                     this.prefix(nextfind, nextstr, maxResults, results);
                 }
             }
@@ -143,10 +155,9 @@ class TrieNode {
 
         return results;
     }
-
-
 }
 
+// Export the two classes in this module
 module.exports = {
     Trie,
     TrieNode
