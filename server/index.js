@@ -1,17 +1,16 @@
 const express = require('express');
+
 const fs = require('fs');
 const { Trie, TrieNode } = require('./trie.js');
-const { Queue } = require('./queue.js');
 
 const app = express();
 
 const json = JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'}));
 const trie = new Trie(json);
-const queue = new Queue();
 
 app.get('/words/', (req, res) => {
     res.send(JSON.stringify(trie));
-})
+});
 
 app.post('/words/:word', (req, res) => {
     try {
@@ -64,5 +63,5 @@ app.get('/autocomplete/:prefix/:max', (req, res) => {
 })
 
 
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
