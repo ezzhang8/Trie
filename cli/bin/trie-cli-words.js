@@ -1,7 +1,7 @@
 const program = require('commander');
 
-const TrieApi = require('../lib/api.js');
-const api = new TrieApi();
+const {TrieAPI} = require('../lib/api.js');
+const api = new TrieAPI();
 
 program
     .command('get')
