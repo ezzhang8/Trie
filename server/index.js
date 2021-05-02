@@ -5,8 +5,27 @@ const { Trie, TrieNode } = require('./trie.js');
 
 const app = express();
 
+const http = require('http');
+const https = require('https');
+
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+
+const httpsServer = https.createServer(credentials, app);
+
+
 const json = JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'}));
 const trie = new Trie(json);
+
+
+app.use(express.static(__dirname, { dotfiles: 'allow' } ));
 
 app.get('/words/', (req, res) => {
     res.send(JSON.stringify(trie));
@@ -28,7 +47,7 @@ app.post('/words/:word', (req, res) => {
         res.status(400);
         res.send(JSON.stringify({
             "success": false,
-            "error": "Could not be added to trie."
+            "error": n
         }));
     }
 })
@@ -62,6 +81,4 @@ app.get('/autocomplete/:prefix/:max', (req, res) => {
     }));
 })
 
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+httpsServer.listen(443, () => console.log('HTTPS Server running on port 443'));
