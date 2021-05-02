@@ -8,21 +8,21 @@ const { Trie, TrieNode } = require('./trie.js');
 const app = express();
 
 // BEGIN DIGITALOCEAN ONLY
-const https = require('https');
+// const https = require('https');
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/chain.pem', 'utf8');
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/cert.pem', 'utf8');
+// const ca = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/chain.pem', 'utf8');
 
-const credentials = {
-	key: privateKey,
-	cert: certificate,
-	ca: ca
-};
+// const credentials = {
+// 	key: privateKey,
+// 	cert: certificate,
+// 	ca: ca
+// };
 
-const httpsServer = https.createServer(credentials, app);
+// const httpsServer = https.createServer(credentials, app);
 
-app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+// app.use(express.static(__dirname, { dotfiles: 'allow' } ));
 
 // END DIGITALOCEAN ONLY
 
@@ -136,8 +136,8 @@ app.get('/autocomplete/:prefix/:max', (req, res) => {
 })
 
 // DIGITALOCEAN ONLY
-httpsServer.listen(443, () => console.log('HTTPS Server running on port 443'));
+// httpsServer.listen(443, () => console.log('HTTPS Server running on port 443'));
 
 
 // TESTING ONLY 
-// app.listen(80, () => console.log(`Server running on port 80`)); 
+app.listen(80, () => console.log(`Server running on port 80`)); 
