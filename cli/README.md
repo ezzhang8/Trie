@@ -3,7 +3,7 @@ The command line interface for the trie.
 
 # Installation
 This CLI can be installed by running <br>
-`npm i @ezzhang8/trie-cli`
+`npm install -g @ezzhang8/trie-cli`
 
 # Usage
 A list of commands will be below:
@@ -15,7 +15,7 @@ A list of commands will be below:
 ```trie-cli words add``` Adds a word to the trie <br>
 ```trie-cli words delete``` Deletes a word from the trie <br>
 ```trie-cli find``` Determines whether a specified word is in the trie <br>
-```trie-cli auto --max=<num>``` Returns a list of autofill suggestions based on a prefix and a maximum amount of results <br>
+```trie-cli auto --max=<num>``` Returns a list of autofill suggestions based on a prefix and a maximum amount of results (default 5)<br>
 
 For more information on these commands, see [here](https://github.com/ezzhang8/Trie/wiki/API-Documentation) for documentation on the API.
 

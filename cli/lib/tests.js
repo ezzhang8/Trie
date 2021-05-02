@@ -113,6 +113,8 @@ class APITests {
     }
 
     async test10() {
+        console.log("Trying to run through every test...".yellow)
+
         for (let i = 1; i<10; i++) {
             await this["test"+i]();
         }
