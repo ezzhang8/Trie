@@ -9,4 +9,4 @@ The server is hosted on DigitalOcean. I chose DigitalOcean as my host due to its
 The CLI acts as a client and makes requests to the API endpoints established by the server. The CLI prompts the user to fill in all the parameters to get a meaningful response from one of the endpoints. In turn, the server plays an important role in sending error messages, handling the flow of requests, and processing the more intensive algorithms. The server takes in the request from the CLI, or any API call, and performs the said operation on the trie. 
 
 # REST endpoints
-I have documented all the endpoints on this Github wiki page, with cURL commands and the format for API calls.
+I have documented all the endpoints on [this](https://github.com/ezzhang8/Trie/wiki/API-Documentation) Github wiki page, with cURL commands and the format for API calls.
