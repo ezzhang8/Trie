@@ -96,7 +96,7 @@ class APITests {
     }
 
     async test9() {
-        console.log("Longer words and phrases: add, find, suggest, then delete.")
+        console.log("Longer words and phrases: add, find, suggest, then delete.".yellow)
         const test = ['onomatopoeia', 'orangutan', 'orange', 'oxford', 'oxen', "the quick brown fox", "jumped over", "a lazy dog"];
 
         for (let t of test) {
