@@ -8,6 +8,7 @@ const api = new TrieApi();
 program
     .version(package.version)
     .command('words', 'Create, read, and delete words in the trie.')
+    .command('test', 'Test the global state of the trie.')
 
 program
     .command('find')

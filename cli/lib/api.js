@@ -4,7 +4,7 @@ const colors = require('colors');
 
 class TrieApi {
     constructor() {
-        this.url = 'https://trie.er1c.me/'
+        this.url = 'https://trie.er1c.me/';
     }
 
     async getTrie(pp) {
@@ -30,7 +30,7 @@ class TrieApi {
             console.log(str.yellow);
         }
         catch (e) {
-            console.log(e).red;
+            console.log("An error occured when contacting the server.".red);
         }
     }
 
@@ -43,7 +43,6 @@ class TrieApi {
                 validate: input => (input === '' ? 'You must enter a string.' : true)
             }
         ])
-
 
         try {
             const response = await axios.post(this.url+"words/"+input.word);
@@ -59,7 +58,6 @@ class TrieApi {
         }
         catch(e) {
             console.log(`An error occured. Check your string to make sure you have entered it properly.`.red);
-            console.log(`Status code: ${e.response.status} ${e.response.statusText}`.red);
         }
     }
 
@@ -87,7 +85,6 @@ class TrieApi {
         }
         catch(e) {
             console.log(`An error occured. Check your string to make sure you have entered it properly.`.red);
-            console.log(`Status code: ${e.response.status} ${e.response.statusText}`.red);
         }   
     }
 
@@ -119,12 +116,12 @@ class TrieApi {
         }
         catch(e) {
             console.log(`An error occured. Check your string to make sure you have entered it properly.`.red);
-            console.log(`Status code: ${e.response.status} ${e.response.statusText}`.red);
+
         }   
 
     }
 
-    async auto(num) {
+    async auto(num, word) {
         const input = await inquirer.prompt([
             {
                 type: 'input',
@@ -138,7 +135,7 @@ class TrieApi {
             const response = await axios.get(this.url+"autocomplete/"+input.word+"/"+num);
 
             if (response.data.success && response.data.words.length > 0) {
-                console.log(`${response.data.words.length} suggestions were found in the trie.`.green);
+                console.log(`${response.data.words.length} (max ${num}) suggestions were found in the trie.`.green);
 
                 console.log(response.data.words);
             }

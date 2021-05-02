@@ -12,13 +12,14 @@
     "url": "git+https://github.com/ezzhang8/Trie.git"
   },
   "author": "Eric Zhang",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ezzhang8/Trie/issues"
   },
   "homepage": "https://github.com/ezzhang8/Trie#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "express-queue": "^0.0.12"
   },
   "devDependencies": {
     "nodemon": "^2.0.7"

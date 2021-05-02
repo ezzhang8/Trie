@@ -15,7 +15,7 @@ class Trie {
     save() {
         fs.writeFile('data.json', JSON.stringify(this.root), (err) => {
             if (err != null) 
-                console.log(err);
+                throw "Error saving trie to JSON file.";
         });
     }
 }

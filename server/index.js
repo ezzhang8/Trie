@@ -1,84 +1,143 @@
 const express = require('express');
+const queue = require('express-queue'); // Module used to preserve the order of requests 
+
 
 const fs = require('fs');
 const { Trie, TrieNode } = require('./trie.js');
 
 const app = express();
 
-const http = require('http');
-const https = require('https');
+// BEGIN DIGITALOCEAN ONLY
+// const https = require('https');
 
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/chain.pem', 'utf8');
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/privkey.pem', 'utf8');
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/cert.pem', 'utf8');
+// const ca = fs.readFileSync('/etc/letsencrypt/live/trie.er1c.me/chain.pem', 'utf8');
 
-const credentials = {
-	key: privateKey,
-	cert: certificate,
-	ca: ca
-};
+// const credentials = {
+// 	key: privateKey,
+// 	cert: certificate,
+// 	ca: ca
+// };
 
-const httpsServer = https.createServer(credentials, app);
+// const httpsServer = https.createServer(credentials, app);
 
+// app.use(express.static(__dirname, { dotfiles: 'allow' } ));
+
+// END DIGITALOCEAN ONLY
+
+app.use(queue({ activeLimit: 1, queuedLimit: -1 }));
 
 const json = JSON.parse(fs.readFileSync('data.json', {encoding: 'utf8'}));
 const trie = new Trie(json);
 
 
-app.use(express.static(__dirname, { dotfiles: 'allow' } ));
-
 app.get('/words/', (req, res) => {
-    res.send(JSON.stringify(trie));
+    try {
+        res.send(trie);
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500);
+        res.send({
+            "error": e.toString(),
+        });
+    }
 });
 
 app.post('/words/:word', (req, res) => {
     try {
-        TrieNode.add(trie.root, req.params.word);
+        const word = req.params.word.replace(/[^a-zA-Z0-9 ]/g, "").toLowerCase();
+
+        if (TrieNode.find(trie.root, word)) 
+            throw "This word already exists in the trie."
+        
+        TrieNode.add(trie.root, word);
         trie.save(); 
 
         res.status(200);
-        res.send(JSON.stringify({
+        res.send({
             "success": true,
-            "word": req.params.word
-        }));
+            "word": word
+        });
     }   
     catch(e) {
         console.log(e);
         res.status(400);
-        res.send(JSON.stringify({
+        res.send({
             "success": false,
-            "error": n
-        }));
+            "error": e.toString()
+        });
     }
 })
 
 app.delete('/words/:word', (req, res) => {
-    TrieNode.delete(trie.root, req.params.word);
-    trie.save(); 
-
-    res.send(JSON.stringify({
-        "success": true
-    }));
+    try {
+        if (!TrieNode.delete(trie.root, req.params.word)) 
+            throw "This word cannot be deleted because it does not already exist.";
+        
+        trie.save(); 
+    
+        res.send({
+            "success": true
+        });
+    }
+    catch(e) {
+        console.log(e);
+        res.status(400);
+        res.send({
+            "success": false,
+            "error": e.toString()
+        });
+    }
 })
 
 app.get('/find/:word', (req, res) => {
-    const result = TrieNode.find(trie.root, req.params.word)
-    res.status(200);
-    res.send(JSON.stringify({
-        "success": true,
-        "found": result == false ? false : result[result.length-1].isWord
-    }));
+    try {
+        const result = TrieNode.find(trie.root, req.params.word)
+        res.status(200);
+        
+        res.send({
+            "success": true,
+            "found": result == false ? false : result[result.length-1].isWord
+        }); 
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500);
+        res.send({
+            "success": false,
+            "error": e.toString()
+        });
+    }
+     
 })
 
 app.get('/autocomplete/:prefix/:max', (req, res) => {
-    const find = JSON.parse(JSON.stringify(TrieNode.find(trie.root, req.params.prefix)));
-    if (find == undefined) 
-        return;
-
-    res.send(JSON.stringify({
-        "success": true,
-        "words": TrieNode.prefix(find[find.length-1], req.params.prefix, req.params.max)
-    }));
+    try {
+        const find = JSON.parse(JSON.stringify(TrieNode.find(trie.root, req.params.prefix)));
+        if (find == undefined) 
+            return;
+    
+        res.send({
+            "success": true,
+            "words": TrieNode.prefix(find[find.length-1], req.params.prefix, req.params.max)
+        });
+    }
+    catch(e) {
+        console.log(e);
+        res.status(500);
+        res.send({
+            "success": false,
+            "error": e.toString()
+        });
+    }
+    
 })
 
-httpsServer.listen(443, () => console.log('HTTPS Server running on port 443'));
+// DIGITALOCEAN ONLY
+// httpsServer.listen(443, () => console.log('HTTPS Server running on port 443'));
+
+
+// TESTING ONLY 
+app.listen(80, () => console.log(`Server running on port 80`)); 
