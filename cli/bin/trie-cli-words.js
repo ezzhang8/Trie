@@ -14,7 +14,6 @@ program
     .description('Adds a string to the trie.')
     .action(cmd => api.postTrie())
 
-
 program 
     .command('delete')
     .description('Deletes a string to the trie.')

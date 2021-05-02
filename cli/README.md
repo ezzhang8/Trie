@@ -2,7 +2,7 @@
 The command line interface for the trie.
 
 # Installation
-This CLI can be installed by running
+This CLI can be installed by running <br>
 `npm i @ezzhang8/trie-cli`
 
 # Usage
@@ -22,6 +22,6 @@ For more information on these commands, see [here](https://github.com/ezzhang8/T
 # Test Commands
 There are some test commands included to test the API:
 
-```trie-cli test exec --t=<num>``` Executes one of the ten numbered tests by specifying the --t flag. <br>
+```trie-cli test exec --t=<num>``` Executes one of the ten (1-10) numbered tests by specifying the --t flag. <br>
 Example: ```trie-cli test exec --t=3``` executes test 3.
 

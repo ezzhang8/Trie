@@ -2,17 +2,25 @@ const axios = require('axios');
 const inquirer = require('inquirer');
 const colors = require('colors');
 
+/**
+ * Main API class 
+ */
 class APIHandler {
     constructor() {
-        this.url = 'https://trie.er1c.me/'
+        this.url = 'https://trie.er1c.me/';
     }
 
+    /**
+     * Gets the entire trie from the server and prints it in the console
+     * @param {boolean} pp Whether to pretty print or not
+     */
     async getTrie(pp) {
         try {
             const response = await axios.get(this.url+"words/");
             let str = JSON.stringify(response.data, null, 1)
 
             if (pp) {
+                // Use a lot of regexes to get rid of JSON
                 str = str
                     .replace(/"children":/g, '')
                     .replace(/"isWord":/g, '')
@@ -27,6 +35,7 @@ class APIHandler {
                     .replace(/^\s*\n/gm, '')
             }
 
+            // Output yellow text 
             console.log(str.yellow);
         }
         catch (e) {
@@ -34,6 +43,10 @@ class APIHandler {
         }
     }
 
+    /**
+     * Adds a word to the trie, if it does not already exist.
+     * @param {string} word The word to add
+     */
     async postTrie(word) {
         const response = await axios.post(this.url+"words/"+word)
             .catch((error) => {
@@ -52,7 +65,10 @@ class APIHandler {
             }
         }
     }
-
+    /**
+     * Deletes a word from teh trie if possible
+     * @param {string} word The word to delete from the trie
+     */
     async deleteTrie(word) {
         const response = await axios.delete(this.url+"words/"+word)
             .catch((error) => {
@@ -72,7 +88,10 @@ class APIHandler {
         }
 
     }
-
+    /**
+     * Finds words in trie
+     * @param {string} word The word which to look for
+     */
     async find(word) {
         const response = await axios.get(this.url+"find/"+word)
             .catch((error) => {
@@ -96,8 +115,12 @@ class APIHandler {
         }
     }
 
+    /**
+     * Autocompletes incomplete words that use similar letters words in the trie.
+     * @param {number} num max number of autocomplete results to collect
+     * @param {string} word the prefix/word typed in so far that should be completed
+     */
     async auto(num, word) {
-        
         const response = await axios.get(this.url+"autocomplete/"+word+"/"+num)
             .catch((error) => {
                 console.log(`An error occured: ${error.response.data.error}`.red);
@@ -121,6 +144,9 @@ class APIHandler {
     }
 }
 
+/**
+ * Descendant class of APIHandler, main purpose is to use inquirer to prompt the user to enter their words in a standalone field rather than in an argument.
+ */
 class TrieAPI extends APIHandler {
     constructor() {
         super();

@@ -5,8 +5,8 @@ const api = new APITests();
 
 program
     .command('exec')
-    .description('Gets the current global state of the trie.')
-    .option('--t <num>', 'The test to run,', 1)
+    .description('Executes a test.')
+    .option('--t <num>', 'The test to run (1-10)', 1)
     .action(cmd => {
         try {
             api["test"+cmd.t]();

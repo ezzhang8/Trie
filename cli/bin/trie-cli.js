@@ -19,7 +19,6 @@ program
     .command('auto')
     .description('Return a list of autocomplete suggestions based on a prefix.')
     .option('--max <num>', 'Maximum amount of suggestions to return', 5)
-   // .action(cmd => api.auto())
     .action(cmd => api.auto(cmd.max))
 
 program.parse(process.argv);
